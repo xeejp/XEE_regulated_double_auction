@@ -1,4 +1,4 @@
-defmodule DoubleAuction do
+defmodule RegulatedDoubleAuction do
   use XeeThemeScript
   require Logger
 
@@ -15,6 +15,7 @@ defmodule DoubleAuction do
 
   def init do
     {:ok, %{data: %{
+       regulation: 0,
        mode: "wait",
        participants: %{},
        buyer_bids: [],
@@ -30,6 +31,7 @@ defmodule DoubleAuction do
   def filter_data(data) do
     rule = %{
       mode: true,
+      regulation: true,
       participants: "users",
       buyer_bids: "buyerBids",
       seller_bids: "sellerBids",
@@ -45,6 +47,7 @@ defmodule DoubleAuction do
   def filter_data(data, id) do
     rule = %{
       mode: true,
+      regulation: true,
       buyer_bids: "buyerBids",
       seller_bids: "sellerBids",
       deals: true,
@@ -107,6 +110,10 @@ defmodule DoubleAuction do
     wrap_result(data, %{data | mode: mode})
   end
 
+  def handle_received(data, %{"action" => "change_regulation", "params" => regulation}) do
+    wrap_result(data, %{data | regulation: regulation})
+  end
+
   def handle_received(data, %{"action" => "match"}) do
     participants = Enum.shuffle(data.participants) |> Enum.map_reduce(1, fn {id, participant}, acc ->
       if rem(acc, 2) == 0 do
@@ -156,9 +163,19 @@ defmodule DoubleAuction do
     {:ok, %{data: data, participant: %{id => %{action: action}}}}
   end
 
+  def conformed?(data, bid) do
+    regulation = data.regulation
+    case {regulation, bid} do
+      {0, _} -> true
+      {regulation, bid} when regulation > 0 -> bid <= regulation
+      {regulation, bid} when regulation < 0 -> bid >= -regulation
+    end
+  end
+
   def handle_received(data, %{"action" => "bid", "params" => bid}, id) do
     old = data
     participant = Map.get(data.participants, id)
+    true = conformed?(data, bid)
     data = case participant do
       # Seller
       %{role: "seller", bidded: bidded, bid: previous_bid, money: money, dealt: false} when not is_nil(money) and bid >= money ->

@@ -13,14 +13,16 @@ import BidsTable from 'components/BidsTable'
 import Users from './Users'
 import ScreenMode from './ScreenMode'
 import ExperimentKey from './ExperimentKey'
+import RegulationForm from './RegulationForm'
 
 import { enableScreenMode } from './actions'
 
-const mapStateToProps = ({ buyerBids, sellerBids, deals, users, screenMode }) => ({
+const mapStateToProps = ({ buyerBids, sellerBids, deals, users, regulation, screenMode }) => ({
   buyerBids,
   sellerBids,
   deals,
   users,
+  regulation,
   screenMode
 })
 
@@ -40,7 +42,7 @@ class App extends Component {
   }
 
   render() {
-    const { buyerBids, sellerBids, deals, users, screenMode } = this.props
+    const { buyerBids, sellerBids, deals, users, regulation, screenMode } = this.props
     return (
       <span>
         { screenMode
@@ -57,6 +59,14 @@ class App extends Component {
                 style={{
                   marginTop: "5%",
                   clear: "right"
+                }}
+              />
+              <div style={{ marginTop: "5%" }}>
+                <RegulationForm />
+              </div>
+              <Divider
+                style={{
+                  marginTop: "5%",
                 }}
               />
               <div style={{ marginTop: "5%" }}>
@@ -79,6 +89,7 @@ class App extends Component {
               />
               <Chart
                 users={users}
+                regulation={regulation}
               />
               <RaisedButton onClick={this.enableScreenMode.bind(this)} primary={true} style={{ marginTop: '5%' }}>スクリーンモードに移行</RaisedButton>
             </div>

@@ -5,9 +5,10 @@ import Divider from 'material-ui/Divider'
 
 import BidsTable from 'components/BidsTable'
 import BidForm from './BidForm'
+import Regulation from 'components/Regulation'
 
-const mapStateToProps = ( {personal, buyerBids, sellerBids, deals} ) =>
-Object.assign({}, personal, { buyerBids, sellerBids, deals })
+const mapStateToProps = ( {personal, buyerBids, sellerBids, deals, regulation} ) =>
+Object.assign({}, personal, { buyerBids, sellerBids, deals, regulation })
 
 const Buyer = ({ money, bidded, bid, dealt, deal }) => {
   if (dealt) {
@@ -55,9 +56,10 @@ const Seller = ({ money, bidded, bid, dealt, deal }) => {
   }
 }
 
-const Auction = ({ buyerBids, sellerBids, deals, role, money, bidded, bid, dealt, deal }) => (
+const Auction = ({ buyerBids, sellerBids, deals, role, money, bidded, bid, dealt, deal, regulation }) => (
   <div>
     <h2>ダブルオークション実験</h2>
+    <Regulation regulation={regulation} />
     { role == "buyer" ? <Buyer money={money} bidded={bidded} bid={bid} dealt={dealt} deal={deal} /> : null }
     { role == "seller" ? <Seller money={money} bidded={bidded} bid={bid} dealt={dealt} deal={deal} /> : null }
     { role == null ? <p>あなたは現在進行中のダブルオークションには参加していません。</p> : null }

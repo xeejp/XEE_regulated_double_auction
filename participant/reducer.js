@@ -7,6 +7,7 @@ const reducer = createReducer({
   buyerBids: [],
   sellerBids: [],
   deals: [],
+  regulation: 0,
   personal: {
   }
 })

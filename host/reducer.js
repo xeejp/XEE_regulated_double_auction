@@ -17,6 +17,7 @@ const reducer = createReducer({
   buyerBids: [],
   sellerBids: [],
   deals: [],
+  regulation: 0,
   screenMode: false
 })
 

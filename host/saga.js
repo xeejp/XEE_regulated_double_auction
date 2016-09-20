@@ -1,6 +1,7 @@
 import { take, put, fork, select, call } from 'redux-saga/effects'
+import { takeLatest } from 'redux-saga'
 
-import { submitMode, changeMode, match, nextMode } from './actions'
+import { submitMode, changeMode, match, nextMode, submitRegulation } from './actions'
 
 import { getMode } from 'util/index'
 
@@ -32,16 +33,18 @@ function* nextModeSaga() {
 }
 
 function* matchSaga() {
-  while (true) {
-    yield take(`${match}`)
-    sendData('match')
-  }
+  sendData('match')
+}
+
+function* submitRegulationSaga(action) {
+  sendData('change_regulation', action.payload)
 }
 
 function* saga() {
   yield fork(changeModeSaga)
   yield fork(nextModeSaga)
-  yield fork(matchSaga)
+  yield fork(takeLatest, `${match}`, matchSaga)
+  yield fork(takeLatest, `${submitRegulation}`, submitRegulationSaga)
 }
 
 export default saga

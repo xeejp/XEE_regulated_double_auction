@@ -7,10 +7,21 @@ import SnackBar from 'material-ui/SnackBar'
 
 import { bid } from './actions'
 
-const mapStateToProps = ({personal}) => ({
+const mapStateToProps = ({ personal, regulation}) => ({
   role: personal.role,
-  money: personal.money
+  money: personal.money,
+  regulation
 })
+
+function isConformed(money, regulation) {
+  if (regulation == 0) {
+    return true
+  } else if (regulation > 0) {
+    return money <= regulation
+  } else {
+    return money >= -regulation
+  }
+}
 
 class MatchingButton extends Component {
   constructor(props) {
@@ -31,11 +42,13 @@ class MatchingButton extends Component {
 
   handleChange(event) {
     const value = event.target.value
-    const { role, money } = this.props
+    const { role, money, regulation } = this.props
     const numValue = parseInt(value, 10)
-    const isValid = role == "buyer"
-      ? numValue <= money
-      : numValue >= money
+    const isValid = isConformed(numValue, regulation) && (
+      role == "buyer"
+        ? numValue <= money
+        : numValue >= money
+    )
     this.setState({
       value,
       isValid
