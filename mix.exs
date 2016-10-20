@@ -2,7 +2,7 @@ defmodule RegulatedDoubleAuction.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :regulated_double_auction,
+    [app: :xee_regulated_double_auction,
      version: "0.1.0",
      build_path: "../../_build",
      config_path: "../../config/config.exs",
